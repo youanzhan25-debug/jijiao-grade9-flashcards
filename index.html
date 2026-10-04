@@ -447,8 +447,8 @@ function buildChips(){
   var cats = [];
   var seen = {};
   for (var i=0;i<ALL.length;i++){
-    var k = ALL[i].l1zh;
-    if (!seen[k]){ seen[k]=true; cats.push({zh:k, en:ALL[i].l1en, n:1}); }
+    var k = ALL[i].l2zh;
+    if (!seen[k]){ seen[k]=true; cats.push({zh:k, en:ALL[i].l2en, n:1}); }
     else { for (var j=0;j<cats.length;j++) if (cats[j].zh===k) cats[j].n++; }
   }
   var html = '<div class="chip on" data-cat="all">全部 <b>'+ALL.length+'</b></div>';
@@ -474,7 +474,7 @@ function buildDeck(){
   stopSpeaking();
   state.deck = [];
   for (var i=0;i<ALL.length;i++){
-    if (state.cat==="all" || ALL[i].l1zh===state.cat) state.deck.push(i);
+    if (state.cat==="all" || ALL[i].l2zh===state.cat) state.deck.push(i);
   }
   if (state.order==="rand") shuffle(state.deck);
   state.idx = 0;
@@ -534,7 +534,7 @@ function render(){
   var pct = n ? Math.round((state.idx+1)/n*100) : 0;
   elPfill.style.width = pct+"%";
   elPcur.textContent = (state.idx+1)+" / "+n;
-  elPinfo.textContent = state.cat==="all" ? "全部类目" : state.cat;
+  elPinfo.textContent = state.cat==="all" ? "全部" : state.cat;
 }
 function flipCard(){
   state.flipped = !state.flipped;
