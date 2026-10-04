@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>冀教版九年级上册单词闪卡</title>
+<style>
+:root{
+  --bg1:#0f1b2d; --bg2:#1b2f4e;
+  --card:#fdf6ec; --card-edge:#e8dcc8;
+  --ink:#24344d; --sub:#6b7a92;
+  --acc:#ff7a3d; --acc-deep:#e85d1f;
+  --gold:#d9a441;
+  --ok:#2ecc71;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{max-width:100%;overflow-x:hidden;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",sans-serif;
+  background:radial-gradient(120% 90% at 15% 0%,var(--bg2) 0%,var(--bg1) 55%,#0a1522 100%);
+  min-height:100vh;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;
+  padding:env(safe-area-inset-top) 12px calc(env(safe-area-inset-bottom) + 12px);
+}
+.wrap{width:100%;max-width:520px;display:flex;flex-direction:column;flex:1;}
+
+/* ---------- 头部 ---------- */
+header{text-align:center;padding:14px 0 10px;}
+header h1{
+  font-size:19px;font-weight:800;letter-spacing:1px;color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+header h1 .dot{color:var(--acc);}
+header p{font-size:12px;color:#9fb2cc;margin-top:4px;}
+
+/* ---------- 工具条 ---------- */
+.toolbar{display:flex;gap:8px;align-items:center;margin:10px 0 8px;flex-wrap:nowrap;}
+.btn{
+  border:none;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:600;
+  background:rgba(255,255,255,.08);color:#dfe9f5;cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
+  transition:transform .12s,background .15s;
+}
+.btn:active{transform:scale(.94);}
+.btn.on{background:var(--acc);color:#fff;}
+.spacer{flex:1;}
+.icon-btn{width:38px;height:38px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:17px;}
+
+/* 分类 chips 横向滚动 */
+.chips{
+  display:flex;gap:8px;overflow-x:auto;padding:6px 2px 8px;margin:0 -2px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.chips::-webkit-scrollbar{display:none;}
+.chip{
+  flex:0 0 auto;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);
+  color:#c8d6e8;border-radius:999px;padding:7px 13px;font-size:12.5px;cursor:pointer;
+  transition:all .15s;white-space:nowrap;
+}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700;}
+
+/* ---------- 卡片 ---------- */
+.stage{display:flex;justify-content:center;perspective:1400px;margin:8px 0 4px;}
+.card-scene{position:relative;width:100%;max-width:460px;height:min(52vh,430px);min-height:300px;transform-style:preserve-3d;}
+.card{
+  position:absolute;inset:0;border-radius:26px;cursor:default;
+  transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.1,.2,1);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  box-shadow:0 18px 45px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.06) inset;
+}
+.card.flip{transform:rotateY(180deg);}
+.face{
+  position:absolute;inset:0;border-radius:26px;padding:22px;
+  display:flex;flex-direction:column;
+  background:linear-gradient(165deg,#fffdf7 0%,var(--card) 55%,#f3e8d2 100%);
+  border:1px solid var(--card-edge);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+}
+.face.back{transform:rotateY(180deg);background:linear-gradient(165deg,#fffaf0 0%,#fdf0da 60%,#f7e3c4 100%);}
+
+.face .tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.tag{
+  font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;
+  background:rgba(26,74,135,.09);color:#3a5a86;letter-spacing:.3px;
+}
+.tag.acc{background:rgba(255,122,61,.14);color:var(--acc-deep);}
+
+.face .main{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;overflow:hidden;}
+.card-img{
+  flex:none;width:min(62%,240px);aspect-ratio:1/1;margin:2px auto 12px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:18px;background:linear-gradient(160deg,#fff 0%,#f1e7d3 100%);
+  border:1px solid rgba(217,164,65,.35);overflow:hidden;
+}
+.card-img img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transform:scale(1.3);
+  transform-origin:center;
+}
+.card-img.hide{display:none;}
+.watermark{
+  text-align:center;font-size:8.5px;line-height:1.5;letter-spacing:.5px;
+  color:rgba(90,70,35,.20);margin:2px 0 6px;user-select:none;
+}
+.watermark.hide{display:none;}
+.face .l3en,.face .l3zh{font-weight:800;word-break:break-word;line-height:1.3;}
+.face .l3en{font-size:clamp(24px,6vw,34px);color:var(--ink);}
+.face .l3zh{font-size:clamp(30px,7.5vw,44px);color:var(--ink);}
+.face .hint{font-size:12px;color:var(--sub);margin-top:12px;}
+
+.path{
+  margin-top:auto;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.65);
+  border:1px dashed rgba(217,164,65,.55);text-align:center;
+}
+.path .pl{font-size:12px;color:var(--sub);margin-bottom:4px;letter-spacing:1px;}
+.path .pv{font-size:15px;font-weight:700;color:#5a4a20;line-height:1.5;word-break:break-word;}
+.path .pv .arrow{color:var(--gold);margin:0 5px;font-weight:900;}
+
+.face:not(.back) .path{display:none;}
+.speaker{
+  position:absolute;bottom:14px;right:14px;z-index:5;
+  width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--acc);color:#fff;font-size:19px;
+  box-shadow:0 6px 16px rgba(232,93,31,.45);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .12s;
+}
+.speaker:active{transform:scale(.9);}
+.speaker.speaking{animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,122,61,.55);}50%{box-shadow:0 0 0 14px rgba(255,122,61,0);}}
+.flipbtn{
+  position:absolute;bottom:14px;left:14px;z-index:5;
+  width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--gold);color:#fff;font-size:19px;
+  box-shadow:0 6px 16px rgba(217,164,65,.45);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .12s;
+}
+.flipbtn:active{transform:scale(.9);}
+
+.corner{
+  position:absolute;top:14px;left:16px;font-size:11.5px;font-weight:700;color:var(--sub);letter-spacing:.5px;
+}
+
+/* ---------- 进度 ---------- */
+.progress{margin:14px 0 4px;}
+.progress .pbar{height:6px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;}
+.progress .pfill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--acc),var(--gold));transition:width .25s;width:0;}
+.progress .ptext{display:flex;justify-content:space-between;font-size:11.5px;color:#9fb2cc;margin-top:6px;}
+
+/* ---------- 底部操作 ---------- */
+.controls{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.ctrl-btn{
+  flex:1;border:none;border-radius:16px;padding:14px 0;font-size:15px;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.1);color:#eaf1fa;transition:transform .12s,background .15s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.ctrl-btn:active{transform:scale(.95);}
+.ctrl-btn.primary{background:linear-gradient(135deg,var(--acc) 0%,var(--acc-deep) 100%);box-shadow:0 8px 20px rgba(232,93,31,.35);}
+.ctrl-btn.small{flex:0 0 auto;width:52px;border-radius:16px;}
+#langBtn{font-size:12px;font-weight:800;letter-spacing:.5px;}
+
+/* ---------- 提示条 ---------- */
+.toast{
+  position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);
+  background:rgba(20,32,52,.95);color:#fff;padding:10px 18px;border-radius:12px;
+  font-size:13px;opacity:0;pointer-events:none;transition:all .3s;z-index:99;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:86%;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+footer{text-align:center;font-size:11px;color:#5f7290;margin-top:14px;letter-spacing:.5px;}
+.tts-banner{
+  display:flex;align-items:flex-start;gap:8px;margin:8px 0 4px;padding:10px 12px;
+  background:linear-gradient(135deg,#fff7e6 0%,#ffefd2 100%);
+  border:1px solid rgba(217,164,65,.5);border-radius:12px;
+  font-size:12.5px;line-height:1.6;color:#6b5310;
+}
+.tts-banner.hide{display:none;}
+.tts-banner b{color:#a05a00;}
+.tts-banner .x{margin-left:auto;flex:none;background:none;border:none;font-size:14px;color:#a08a55;cursor:pointer;padding:0 2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>冀教版九上<span class="dot">单词闪卡</span></h1>
+    <p id="statLine">冀教版九年级上册 · 6 个单元 · 281 个单词</p>
+  </header>
+
+  <div class="tts-banner hide" id="ttsBanner">
+    <div>📢 当前浏览器<span style="color:#c0392b">不支持朗读</span>。<br>请在页面右上角点 <b>「···」→「在浏览器中打开」</b>，或用 <b>Safari / Chrome</b> 打开本链接，即可获得英式发音朗读；<b>添加到主屏幕</b>后从图标进入效果最佳。<br>（微信内置浏览器会屏蔽朗读功能）</div>
+    <button class="x" id="ttsClose">✕</button>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn" id="modeBtn" title="切换卡片朝向">EN → 中</button>
+    <button class="btn" id="orderBtn" title="切换顺序/随机">顺序</button>
+    <div class="spacer"></div>
+    <button class="btn icon-btn" id="autoBtn" title="自动播放">▶</button>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="stage">
+    <div class="card-scene" id="scene">
+      <div class="card" id="card">
+        <div class="face">
+          <span class="corner" id="cornerFront"></span>
+          <div class="tag-row" id="tagsFront"></div>
+          <div class="main">
+            <div class="card-img hide" id="frontImgWrap"><img id="frontImg" alt="" referrerpolicy="no-referrer"></div>
+            <div class="l3en" id="frontText"></div><div class="hint" id="frontHint">点 🔊 英音朗读 · 点左下角 🔄 看中文</div>
+          </div>
+          <div class="path"><div class="pl" id="frontPathLabel">所属路径</div><div class="pv" id="frontPath"></div></div>
+        </div>
+        <div class="face back">
+          <span class="corner">答案</span>
+          <div class="tag-row" id="tagsBack"></div>
+          <div class="main"><div class="l3zh" id="backText"></div><div class="hint">点 🔊 朗读 · 点左下角 🔄 返回</div></div>
+          <div class="path"><div class="pl">所属路径</div><div class="pv" id="backPath"></div></div>
+        </div>
+      </div>
+    <button class="speaker" id="speakBtn" aria-label="朗读">🔊</button>
+    <button class="flipbtn" id="flipBtn" aria-label="翻面">🔄</button>
+    </div>
+  </div>
+
+  <div class="watermark hide" id="watermark"><div>微信/电话：13513443496</div><div>做出口找小詹 · 让外贸更简单</div></div>
+
+  <div class="progress">
+    <div class="pbar"><div class="pfill" id="pfill"></div></div>
+    <div class="ptext"><span id="pcur">0 / 0</span><span id="pinfo"></span></div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn small" id="prevBtn">◀</button>
+    <button class="ctrl-btn primary" id="nextBtn">下一张 ▶</button>
+    <button class="ctrl-btn small" id="langBtn" title="中英文图片转换">中⇄EN</button>
+  </div>
+
+  <footer>数据：冀教版九年级上册（2024版）单词表（含词性）· 点 🔊 逐词跟读 · 点左下角 🔄 翻面 · 右下角按钮中英文图片转换</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+window.CATALOG=[{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"congratulation","l3zh":"n.祝贺","img":"emoji:🎉"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"ache","l3zh":"v. & n.疼痛","img":"emoji:😣"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"hamburger","l3zh":"n.汉堡","img":"https://s.alicdn.com/@sc04/kf/H4a5578d0c31c437fa46ef5fe1895dbb9f.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"biscuit","l3zh":"n.饼干","img":"https://s.alicdn.com/@sc04/kf/Hd1eb8e3f59ac4e0d925a46eb99f4c80cV.png_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"stomachache","l3zh":"n.胃痛；腹痛","img":"emoji:🤢"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"thirsty","l3zh":"adj.渴的；干旱的","img":"emoji:🥤"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"iced","l3zh":"adj.冰镇的；装冰的","img":"emoji:🧊"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"pill","l3zh":"n.药丸；药片","img":"emoji:💊"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"forehead","l3zh":"n.前额；额头","img":"emoji:🧑"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"pale","l3zh":"adj.苍白的；暗淡的","img":"emoji:😦"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"sensible","l3zh":"adj.合理的；明智的","img":"emoji:🧠"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"dietary","l3zh":"adj.饮食的","img":"emoji:🥗"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"guideline","l3zh":"n.指南；参考；准则","img":"emoji:📋"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"bottom","l3zh":"n. adj.底部；最下部 / 底部的；最后的","img":"emoji:⬇️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"grain","l3zh":"n.谷物；颗粒","img":"emoji:🌾"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"cereal","l3zh":"n.谷物；谷类食物","img":"emoji:🥣"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"based","l3zh":"adj.以……为重要部分；以某事为基础","img":"emoji:🧱"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"mutton","l3zh":"n.羊肉","img":"emoji:🍖"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"soybean","l3zh":"n.大豆","img":"emoji:🫘"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"nut","l3zh":"n.坚果；螺母","img":"emoji:🥜"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"base","l3zh":"n. v.根基；基底；基础 / 以……为据点","img":"emoji:🧱"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"regular","l3zh":"adj.频繁的；有规律的","img":"emoji:📅"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"pressure","l3zh":"n.压力；压强","img":"emoji:😰"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"energetic","l3zh":"adj.精力充沛的","img":"emoji:⚡"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"unable","l3zh":"adj.不能的；无能力的","img":"emoji:🚫"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"brush","l3zh":"v. n.刷；拂 / 刷子；画笔","img":"emoji:🪥"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"tooth","l3zh":"n.(pl. teeth)牙齿","img":"emoji:🦷"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"wheelchair","l3zh":"n.轮椅","img":"https://s.alicdn.com/@sc04/kf/H8ff2d360ebad4bd4b04937d9f75521e9F.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"laptop","l3zh":"n.笔记本电脑","img":"https://s.alicdn.com/@sc04/kf/A88018986425a434aaa90b5a7666dbcd5p.png_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"married","l3zh":"adj.已婚的；结婚的","img":"emoji:💍"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"son","l3zh":"n.儿子；孩子","img":"emoji:👦"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"kick","l3zh":"v.踢；踹","img":"emoji:🦵"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"daughter","l3zh":"n.女儿","img":"emoji:👧"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"keyboard","l3zh":"n.键盘式电子乐器；键盘","img":"https://s.alicdn.com/@sc04/kf/Hd4f8c8c7608740c7a8faba3b75b14fd70.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"disabled","l3zh":"adj.残疾的；无能力的","img":"emoji:♿"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"cloud","l3zh":"n.云；一团；阴影","img":"emoji:☁️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"lining","l3zh":"n.内衬；衬层","img":"emoji:🧵"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"jog","l3zh":"v.慢跑","img":"emoji:🏃"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"bone","l3zh":"n.骨；骨骼","img":"emoji:🦴"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"mood","l3zh":"n.情绪；心情","img":"emoji:😊"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"belonging","l3zh":"n.属于","img":"emoji:🤝"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"belong","l3zh":"v.属于；适合（与to连用）","img":"emoji:🔗"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"judgment","l3zh":"n.评价；看法","img":"emoji:⚖️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"bat","l3zh":"n.球板；球拍","img":"emoji:🦇"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"relaxed","l3zh":"adj.放松的；自在的","img":"emoji:😌"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"illness","l3zh":"n.疾病；病","img":"emoji:🤒"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"cancer","l3zh":"n.癌；癌症","img":"emoji:⚠️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"whenever","l3zh":"conj.无论何时","img":"emoji:🕐"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"somebody","l3zh":"pron.(=someone)某人；重要人物","img":"emoji:🧑"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"account","l3zh":"n.解释；账目；描述","img":"emoji:📄"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"tradition","l3zh":"n.传统；传统的信仰（或风俗）","img":"emoji:🏮"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"fit","l3zh":"adj. v.健康的；适合的 / 适合","img":"emoji:💪"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 1 Staying healthy","l2zh":"Unit 1 保持健康","l3en":"kung fu","l3zh":"n.功夫（中国武术）","img":"emoji:🥋"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"misunderstanding","l3zh":"n.误会；误解","img":"emoji:💬"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"fix","l3zh":"v.修理；安装","img":"emoji:🔧"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"difficulty","l3zh":"n.困难；困境","img":"emoji:🧗"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"partner","l3zh":"n.伙伴；搭档","img":"emoji:🤝"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"succeed","l3zh":"v.成功；继承","img":"emoji:🏆"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"satisfied","l3zh":"adj.满意的","img":"emoji:😊"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"hate","l3zh":"n. & v.憎恨；厌恶","img":"emoji:😠"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"anger","l3zh":"n.怒；怒火","img":"emoji:😡"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"seriously","l3zh":"adv.严重地；严肃地","img":"emoji:🧐"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"hopefully","l3zh":"adv.有希望地","img":"emoji:🙏"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"president","l3zh":"n.主席；总统","img":"emoji:🎖️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"council","l3zh":"n.委员会；理事会","img":"emoji:🏛️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"opinion","l3zh":"n.意见；想法","img":"emoji:💭"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"successful","l3zh":"adj.成功的","img":"emoji:🏆"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"bake","l3zh":"n. v.烘烤；烘焙 / 烘烤食品","img":"emoji:🥖"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"divide","l3zh":"v.（使）分开；分配","img":"emoji:➗"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"charity","l3zh":"n.慈善；慈善机构","img":"emoji:❤️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"agreement","l3zh":"n.（意见或看法）一致；协定","img":"emoji:🤝"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"satisfy","l3zh":"v.使满意；使满足","img":"emoji:✅"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"proper","l3zh":"adj.恰当的；正确的","img":"emoji:👍"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"joke","l3zh":"n. v.笑话；玩笑；笑柄 / 开玩笑","img":"emoji:😄"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"listener","l3zh":"n.听者；听众","img":"emoji:👂"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"contact","l3zh":"n. v.接触；联系 / 联系；联络","img":"emoji:📞"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"promise","l3zh":"n. &v.承诺","img":"emoji:🤞"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"cancel","l3zh":"v.取消；终止","img":"emoji:❌"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"leader","l3zh":"n.领导者；首领","img":"emoji:👑"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"disappointment","l3zh":"n.失望","img":"emoji:😞"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"absent","l3zh":"adj.缺席的","img":"emoji:🚪"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"paragraph","l3zh":"n.段；段落","img":"emoji:📄"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"shame","l3zh":"n.羞耻；耻辱","img":"emoji:😳"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"silly","l3zh":"adj.愚蠢的；傻的","img":"emoji:🤪"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"solve","l3zh":"v.解决；解答","img":"emoji:✅"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 2 Communication","l2zh":"Unit 2 沟通交流","l3en":"instruction","l3zh":"n.指示；命令","img":"emoji:📋"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"playwright","l3zh":"n.剧作家","img":"emoji:🎭"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"translate","l3zh":"v.被翻译；翻译","img":"emoji:🔤"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"enrich","l3zh":"v.充实；使丰富","img":"emoji:✨"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"alive","l3zh":"adj.继续存在；活着；有活力","img":"emoji:🌱"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"worth","l3zh":"adj.值得；有价值","img":"emoji:💎"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"artwork","l3zh":"n.艺术作品；插图","img":"emoji:🎨"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"calligraphy","l3zh":"n.书法","img":"emoji:🖌️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"drama","l3zh":"n.戏剧；戏剧艺术","img":"emoji:🎭"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"legendary","l3zh":"adj.传奇的；著名的；传说的","img":"emoji:🌟"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"ink","l3zh":"n.墨水；墨汁；油墨","img":"https://s.alicdn.com/@sc04/kf/Hd3cdb38f27514c0a8cfd7c06ce6d473aw.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"slab","l3zh":"n.厚板；厚块；厚片","img":"emoji:🪨"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"lay","l3zh":"v.放置；铺放；产（卵）","img":"emoji:📥"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"grind","l3zh":"v.磨碎；碾碎","img":"emoji:⚙️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"immerse","l3zh":"v.使浸没于；沉浸在","img":"emoji:🫧"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"grab","l3zh":"v. n.抓住；攫取 / 夺取；抓取","img":"emoji:✊"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"harmony","l3zh":"n.和谐；协调","img":"emoji:☯️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"rhythm","l3zh":"n.节奏；韵律","img":"emoji:🥁"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"source","l3zh":"n.来源；起源；原因","img":"emoji:🌊"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"distinct","l3zh":"adj.独特的；有区别的","img":"emoji:🔷"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"calligrapher","l3zh":"n.书法家","img":"emoji:🖌️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"mix","l3zh":"v.混合","img":"emoji:🌀"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"emotion","l3zh":"n.情感；情绪","img":"emoji:💗"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"stroke","l3zh":"n.笔画","img":"emoji:✍️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"angle","l3zh":"n.角度；立场","img":"emoji:📐"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"appreciate","l3zh":"v.欣赏；感激","img":"emoji:👏"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"impressive","l3zh":"adj.令人赞叹的；给人印象深刻的","img":"emoji:🤩"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"artistic","l3zh":"adj.艺术的","img":"emoji:🎨"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"position","l3zh":"n.地位；位置","img":"emoji:📍"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"audience","l3zh":"n.观众；听众","img":"emoji:👥"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"dialogue","l3zh":"n.对话；对白","img":"emoji:💬"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"couple","l3zh":"n.数个；一对","img":"emoji:👫"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"complex","l3zh":"adj.复杂的；难懂的","img":"emoji:🧩"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"actor","l3zh":"n.演员","img":"emoji:🎭"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"actress","l3zh":"n.女演员","img":"emoji:🎭"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"director","l3zh":"n.导演；经理","img":"emoji:🎬"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"involve","l3zh":"v.包含；涉及","img":"emoji:🔗"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"budget","l3zh":"n.预算","img":"emoji:💰"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"comedy","l3zh":"n.喜剧；诙谐","img":"emoji:😂"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"humour","l3zh":"n.幽默；幽默感","img":"emoji:😄"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"wander","l3zh":"n. & v.游荡","img":"emoji:🚶"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"war","l3zh":"n.战争；斗争","img":"emoji:⚔️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"battle","l3zh":"n.战役；战斗","img":"emoji:⚔️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"contribution","l3zh":"n.贡献；捐款","img":"emoji:🤲"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"painter","l3zh":"n.画家；油漆匠","img":"emoji:🎨"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"itself","l3zh":"pron.它本身；它自己","img":"emoji:🪞"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"artist","l3zh":"n.艺术家；画家；大师","img":"emoji:🎨"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"exception","l3zh":"n.例外","img":"emoji:❗"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"lifetime","l3zh":"n.一生；终生","img":"emoji:⏳"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"master","l3zh":"n.绘画大师；能手","img":"emoji:🎖️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"among","l3zh":"prep.在（三者或以上）中","img":"emoji:👥"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"dwell","l3zh":"v.居住；栖身","img":"emoji:🏠"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"masterpiece","l3zh":"n.杰作","img":"emoji:🖼️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"surround","l3zh":"v.环绕；包围","img":"emoji:🌀"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"size","l3zh":"n.大小；尺寸","img":"emoji:📏"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"closely","l3zh":"adv.接近地；亲密地","img":"emoji:🔍"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"detail","l3zh":"n.细微之处；局部","img":"emoji:🔎"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"peaceful","l3zh":"adj.平静的；和平的","img":"emoji:🕊️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"significant","l3zh":"adj.有重大意义的；重要的；显著的","img":"emoji:⭐"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"wife","l3zh":"n.(pl. wives)妻子","img":"emoji:👰"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"hat","l3zh":"n.帽子","img":"https://s.alicdn.com/@sc04/kf/Ha609c107126042cfad053a75b54f3c4aU.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"prince","l3zh":"n.王子","img":"emoji:🤴"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"whatever","l3zh":"pron.无论什么；任何","img":"emoji:🤷"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"god","l3zh":"n.神；上帝；极崇拜的人","img":"emoji:✨"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"honey","l3zh":"n.宝贝；蜂蜜","img":"emoji:🍯"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"marry","l3zh":"v.结婚","img":"emoji:💍"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"fool","l3zh":"n. v.傻瓜；蠢人 / 欺骗；戏弄","img":"emoji:🤪"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"ours","l3zh":"pron.我们的","img":"emoji:👪"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"coast","l3zh":"n.海岸；海滨","img":"emoji:🏖️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"quality","l3zh":"n.质量；品质","img":"emoji:💎"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 3 Arts enrich our life","l2zh":"Unit 3 艺术丰富生活","l3en":"style","l3zh":"n.风格；方式；样式","img":"emoji:👗"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"hero","l3zh":"n.英雄；偶像","img":"emoji:🦸"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"hybrid","l3zh":"n.杂交植物；杂种动物","img":"emoji:🔀"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"gifted","l3zh":"adj.有天赋的；有才华的","img":"emoji:🌟"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"rocket","l3zh":"n.火箭；火箭武器","img":"https://s.alicdn.com/@sc04/kf/H5c30377fae1746ed85df8330d94518b2N.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"spare","l3zh":"v. adj.不吝惜（时间、金钱）/ 闲置的；备用的","img":"emoji:🧰"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"rocketry","l3zh":"n.火箭学；火箭技术","img":"emoji:🚀"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"mathematician","l3zh":"n.数学家","img":"emoji:🧮"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"extend","l3zh":"v.扩展；延伸；给予","img":"emoji:↔️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"decimal","l3zh":"adj.小数的；十进位的","img":"emoji:🔢"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"army","l3zh":"n.陆军部队；陆军","img":"emoji:🎖️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"pirate","l3zh":"n.海盗","img":"emoji:🏴☠️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"sail","l3zh":"v. & n.航行","img":"emoji:⛵"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"voyage","l3zh":"n.航行；航海","img":"emoji:🚢"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"glad","l3zh":"adj.高兴的；乐意的","img":"emoji:😊"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"intelligence","l3zh":"n.智慧","img":"emoji:🧠"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"universe","l3zh":"n.宇宙；世界","img":"emoji:🌌"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"theory","l3zh":"n.理论；学说；原理","img":"emoji:💡"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"relativity","l3zh":"n.相对论；相对性","img":"emoji:⚛️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"article","l3zh":"n.文章；条款；物品","img":"emoji:📰"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"pioneer","l3zh":"n.先驱；先锋","img":"emoji:🧭"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"receive","l3zh":"v.收到；接纳","img":"emoji:📥"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"prize","l3zh":"n.奖；奖品；奖赏","img":"emoji:🏅"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"weapon","l3zh":"n.武器；兵器","img":"emoji:⚔️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"conclusion","l3zh":"n.结论；结尾","img":"emoji:📝"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"course","l3zh":"n.进展；课程","img":"emoji:📚"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"planetary","l3zh":"adj.行星的","img":"emoji:🪐"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"writer","l3zh":"n.作家；作者","img":"emoji:✍️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"educator","l3zh":"n.教育家","img":"emoji:👨‍🏫"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"blind","l3zh":"adj.瞎的；失明的","img":"emoji:🕶️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"deaf","l3zh":"adj.聋的","img":"emoji:👂"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"essay","l3zh":"n.文章；短文","img":"emoji:📝"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"peanut","l3zh":"n.花生","img":"https://s.alicdn.com/@sc04/kf/HTB1488zBb1YBuNjSszhq6AUsFXan.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"shade","l3zh":"n.树荫；阴凉处；阴影","img":"emoji:⛱️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"agriculture","l3zh":"n.农学；农业","img":"emoji:🚜"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"variety","l3zh":"n.种类；多样化","img":"emoji:🌈"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"introduction","l3zh":"n.引进；介绍","img":"emoji:📖"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"production","l3zh":"n.产量；生产","img":"emoji:🏭"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"tirelessly","l3zh":"adv.不知厌倦地","img":"emoji:🔁"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"soldier","l3zh":"n.士兵；军人","img":"emoji:🪖"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"socialism","l3zh":"n.社会主义","img":"emoji:🚩"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"pancake","l3zh":"n.薄饼；烙饼","img":"https://s.alicdn.com/@sc04/kf/H263c2bc3038340d4b7b50938f699b9105.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"worst","l3zh":"adv. adj.最坏（badly的最高级）/ 最坏的（bad的最高级）","img":"emoji:😖"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 4 Great people","l2zh":"Unit 4 伟大人物","l3en":"operate","l3zh":"v.动手术；经营；（使）运转；操作","img":"emoji:🔧"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"Chinatown","l3zh":"n.唐人街；中国城","img":"emoji:🏮"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"crowded","l3zh":"adj.拥挤的；充满的","img":"emoji:👥"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"balloon","l3zh":"n.气球","img":"https://s.alicdn.com/@sc04/kf/H2297ca1a5c0740e58105da118b1907a8o.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"chili","l3zh":"n.辣椒","img":"emoji:🌶️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"pepper","l3zh":"n.胡椒粉；甜椒","img":"https://s.alicdn.com/@sc04/kf/H6a61066962024a87a34d5f07d4a439f3D.png_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"spicy","l3zh":"adj.加有香料的；辛辣的","img":"emoji:🌶️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"spoon","l3zh":"n.勺子；匙","img":"https://s.alicdn.com/@sc04/kf/Hcf5b9e76163244a3a0befaf623cd6cc5a.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"fork","l3zh":"n.餐叉；叉","img":"emoji:🍴"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"ant","l3zh":"n.蚂蚁","img":"emoji:🐜"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"collapse","l3zh":"v.（突然）倒塌；坍塌","img":"emoji:🏚️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"dyke","l3zh":"n.堤；坝","img":"emoji:🌊"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"mile","l3zh":"n.英里","img":"emoji:📏"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"penny","l3zh":"n.便士","img":"emoji:🪙"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"pound","l3zh":"n.英镑；磅","img":"emoji:💷"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"foolish","l3zh":"adj.愚蠢的；傻的","img":"emoji:🤡"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"image","l3zh":"n.形象；印象；图像","img":"emoji:🖼️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"being","l3zh":"n.存在；生物","img":"emoji:🧬"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"pronounce","l3zh":"v.发音；读音","img":"emoji:🗣️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"manner","l3zh":"n.习俗；方式","img":"emoji:🙇"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"Canadian","l3zh":"adj. n.加拿大的 / 加拿大人","img":"emoji:🇨🇦"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"modest","l3zh":"adj.谦虚的；适度的","img":"emoji:🙏"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"virtue","l3zh":"n.美德；德行；优点","img":"emoji:💠"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"praise","l3zh":"v. &n.称赞；表扬；赞扬","img":"emoji:👏"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"cost","l3zh":"n. &v.花费；损失","img":"emoji:💰"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"guest","l3zh":"n.客人；宾客；嘉宾","img":"emoji:🙋"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"plate","l3zh":"n.盘子；碟子","img":"https://s.alicdn.com/@sc04/kf/H8365ff032d20442f89bd7884be326dedq.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"extra","l3zh":"adj.额外的；附加的","img":"emoji:➕"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"waiter","l3zh":"n.服务员","img":"emoji:🤵"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"Australian","l3zh":"adj. n.澳大利亚的 / 澳大利亚人","img":"emoji:🇦🇺"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"accept","l3zh":"v.接受；同意；承认","img":"emoji:✅"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"lemon","l3zh":"n.柠檬；柠檬汁","img":"emoji:🍋"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"coffee","l3zh":"n.咖啡；咖啡色","img":"emoji:☕"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"themselves","l3zh":"pron.他们（她们、它们）自己","img":"emoji:🪞"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"overnight","l3zh":"adv. adj.在夜间；在晚上 / 晚上的","img":"emoji:🌙"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"suggestion","l3zh":"n.建议；提议","img":"emoji:💡"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"noisy","l3zh":"adj.吵闹的；嘈杂的","img":"emoji:🔊"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"thick","l3zh":"adj.厚的；浓的；粗的","img":"emoji:🧱"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 5 Culture shapes us!","l2zh":"Unit 5 文化塑造我们","l3en":"method","l3zh":"n.方法；措施","img":"emoji:🛠️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"jar","l3zh":"n.罐子；一罐（的量）","img":"https://s.alicdn.com/@sc04/kf/H222f2b766e974c68a0f15130f96d6e3fN.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"cardboard","l3zh":"n.硬纸板","img":"emoji:📦"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"upside","l3zh":"n.正面","img":"emoji:🙃"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"shall","l3zh":"aux.（在疑问句中同I和we连用）将要","img":"emoji:❔"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"raincoat","l3zh":"n.雨衣","img":"https://s.alicdn.com/@sc04/kf/Hec1c45d4e7564b84a103b3dcc4e38f4fC.jpg_640x640.jpg"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"tightly","l3zh":"adv.紧紧地；牢固地","img":"emoji:🔗"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"conclude","l3zh":"v.得出结论；结束","img":"emoji:📝"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"tablet","l3zh":"n.碑；匾；药片","img":"emoji:💊"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"text","l3zh":"n.文本；文章；文稿","img":"emoji:💬"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"widespread","l3zh":"adj.普遍的","img":"emoji:🌐"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"movable","l3zh":"adj.可移动的","img":"emoji:🔄"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"printing","l3zh":"n.印刷；印刷术","img":"emoji:🖨️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"quantity","l3zh":"n.数量；大量","img":"emoji:🔢"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"accessible","l3zh":"adj.可使用的","img":"emoji:🚪"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"general","l3zh":"adj.全体的；普遍的","img":"emoji:🌐"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"available","l3zh":"adj.可获得的；有空的","img":"emoji:✅"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"industrial","l3zh":"adj.工业的；产业的","img":"emoji:🏭"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"revolution","l3zh":"n.革命；巨变","img":"emoji:🔄"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"further","l3zh":"adv. adj.进一步；此外 / 更进一步的","img":"emoji:➡️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"lower","l3zh":"v. adj.降低；减少 / 下方的","img":"emoji:⬇️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"electronic","l3zh":"adj.电子的","img":"emoji:⚡"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"increasingly","l3zh":"adv.越来越多地；不断增加地","img":"emoji:📈"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"reader","l3zh":"n.读者；读本","img":"emoji:📖"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"access","l3zh":"v. n.使用；进入；访问 / 通道；入径","img":"emoji:🔑"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"blueprint","l3zh":"n.蓝图；方案","img":"emoji:📐"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"complicated","l3zh":"adj.复杂的","img":"emoji:🧩"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"living","l3zh":"adj.活着的；居住的","img":"emoji:🌱"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"strongly","l3zh":"adv.深刻地；强烈地","img":"emoji:💪"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"twin","l3zh":"n.双胞胎之一","img":"emoji:👯"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"repeat","l3zh":"v.重复；重做","img":"emoji:🔁"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"identify","l3zh":"v.确认；找到","img":"emoji:🔍"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"relative","l3zh":"n. adj.亲戚；亲属 / 比较的；相关联的","img":"emoji:👨👩👧"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"distant","l3zh":"adj.遥远的；不同的","img":"emoji:🛰️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"gene","l3zh":"n.基因","img":"emoji:🧬"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"interact","l3zh":"v.相互作用；交流","img":"emoji:🤝"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"edit","l3zh":"v.编辑；编纂","img":"emoji:✏️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"genetic","l3zh":"adj.基因的；遗传学的","img":"emoji:🧬"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"booking","l3zh":"n.预订；预约","img":"emoji:📅"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"platform","l3zh":"n.平台；舞台","img":"emoji:🖥️"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"navigation","l3zh":"n.导航；航行","img":"emoji:🧭"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"bill","l3zh":"n.账单；纸币；法案","img":"emoji:🧾"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"regardless","l3zh":"adv.不顾","img":"emoji:🤷"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"review","l3zh":"v.回顾；复查；温习","img":"emoji:🔍"},{"l1en":"九年级上册","l1zh":"九年级上册","l2en":"Unit 6 Looking into science","l2zh":"Unit 6 探索科学","l3en":"climate","l3zh":"n.气候；风气","img":"emoji:🌦️"}];
+</script>
+<script>
+(function(){
+"use strict";
+var ALL = window.CATALOG || [];
+var state = {
+  mode: "en2zh",      // en2zh | zh2en
+  order: "seq",       // seq | rand
+  cat: "all",         // 当前筛选的一级类目（zh 名）
+  idx: 0,
+  deck: [],           // 当前筛选后的记录索引（在 ALL 中的下标）
+  flipped: false,
+  autoOn: false,
+  autoTimer: null,
+  speaking: false
+};
+
+/* ---------- DOM ---------- */
+var $ = function(id){ return document.getElementById(id); };
+var elCard=$("card"), elScene=$("scene"), elFrontText=$("frontText"), elBackText=$("backText");
+var elFrontPath=$("frontPath"), elBackPath=$("backPath"), elTagsFront=$("tagsFront"), elTagsBack=$("tagsBack");
+var elCornerFront=$("cornerFront"), elFrontHint=$("frontHint"), elFrontPathLabel=$("frontPathLabel");
+var elFrontImgWrap=$("frontImgWrap"), elFrontImg=$("frontImg"), elWatermark=$("watermark");
+var elPfill=$("pfill"), elPcur=$("pcur"), elPinfo=$("pinfo");
+var elChips=$("chips"), elModeBtn=$("modeBtn"), elOrderBtn=$("orderBtn"), elAutoBtn=$("autoBtn");
+var elSpeak=$("speakBtn"), elFlip=$("flipBtn"), elPrev=$("prevBtn"), elNext=$("nextBtn"), elLang=$("langBtn");
+var elToast=$("toast");
+
+/* ---------- 语音 ---------- */
+var voices=[];
+var SPEAK_GAP = 1000;   // 单词间隔 1 秒
+var speakGen = 0;       // 朗读代次，用于中断旧朗读链
+function loadVoices(){
+  voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+}
+if ("speechSynthesis" in window){
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+function pickVoice(lang){
+  var exact = lang.toLowerCase();
+  var preferred = {
+    "en-gb": ["daniel", "kate", "arthur", "serena", "oliver", "moira", "libby", "sonia", "thomas", "google uk english"],
+    "en-us": ["google us english", "samantha", "alex", "ava", "allison"],
+    "zh-cn": ["ting-ting", "xiaoxiao", "huihui", "meijia", "yaoyao", "google 普通话"]
+  };
+  var list = preferred[exact] || [];
+  for (var i=0;i<list.length;i++){
+    for (var j=0;j<voices.length;j++){
+      if (voices[j].name && voices[j].name.toLowerCase().indexOf(list[i])!==-1) return voices[j];
+    }
+  }
+  for (var j=0;j<voices.length;j++){
+    if (voices[j].lang && voices[j].lang.toLowerCase().indexOf(exact)===0) return voices[j];
+  }
+  var p = lang.split("-")[0];
+  for (var j=0;j<voices.length;j++){
+    if (voices[j].lang && voices[j].lang.toLowerCase().indexOf(p)===0) return voices[j];
+  }
+  return null;
+}
+function stopSpeaking(){
+  speakGen++;
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  if (audioBusy){
+    audioBusy = false;
+    audioEl.pause();
+    audioEl.onended = audioEl.onerror = audioEl.oncanplay = null;
+    audioEl.removeAttribute("src");
+  }
+  elSpeak.classList.remove("speaking");
+}
+/* 整句朗读（中文等） */
+function speakText(text, lang, onDone){
+  if (!("speechSynthesis" in window)){ toast("此浏览器不支持朗读，请点右上角···在浏览器中打开"); if (onDone) onDone(); return; }
+  var gen = ++speakGen;
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = lang;
+  u.rate = 0.92;
+  u.pitch = 1;
+  var v = pickVoice(lang);
+  if (v) u.voice = v;
+  u.onstart = function(){ elSpeak.classList.add("speaking"); };
+  u.onend = u.onerror = function(){
+    if (gen !== speakGen) return;
+    elSpeak.classList.remove("speaking");
+    if (onDone) onDone();
+  };
+  setTimeout(function(){
+    if (gen !== speakGen) return;
+    if ("speechSynthesis" in window) speechSynthesis.resume();
+    speechSynthesis.speak(u);
+  }, 120);
+}
+/* 逐词朗读：跳过 &，词间间隔 SPEAK_GAP 毫秒 */
+/* 朗读分组：按 & 拆分，组内连读（词组），组间间隔 SPEAK_GAP */
+function speakByGroups(groups, lang, onDone){
+  if (!groups.length){ if (onDone) onDone(); return; }
+  if (!("speechSynthesis" in window)){ toast("此浏览器不支持朗读，请点右上角···在浏览器中打开"); if (onDone) onDone(); return; }
+  var gen = ++speakGen;
+  speechSynthesis.cancel();
+  var i = 0;
+  function begin(){
+    if (gen !== speakGen) return;
+    elSpeak.classList.add("speaking");
+    if ("speechSynthesis" in window) speechSynthesis.resume();
+    next();
+  }
+  function next(){
+    if (gen !== speakGen) return;
+    if (i >= groups.length){
+      elSpeak.classList.remove("speaking");
+      if (onDone) onDone();
+      return;
+    }
+    var g = groups[i++];
+    var u = new SpeechSynthesisUtterance(g);
+    u.lang = lang;
+    u.rate = 0.9;
+    u.pitch = 1;
+    var v = pickVoice(lang);
+    if (v){
+      u.voice = v;
+      if (lang.indexOf("en")===0 && !window.__voiceNotified){
+        window.__voiceNotified = true;
+        toast("英式发音："+v.name);
+      }
+    }
+    u.onend = u.onerror = function(){
+      if (gen !== speakGen) return;
+      if (i < groups.length){
+        setTimeout(next, SPEAK_GAP);
+      } else {
+        next();
+      }
+    };
+    speechSynthesis.speak(u);
+  }
+  setTimeout(begin, 120);
+}
+function splitGroups(en){
+  return String(en).split("&").map(function(g){
+    return g.replace(/\s+/g, " ").trim();
+  }).filter(function(g){ return g.length > 0; });
+}
+var audioEl = new Audio();
+var audioBusy = false;
+function pad5(n){ return ("00000"+n).slice(-5); }
+function playAudio(url, onOk, onFail){
+  audioBusy = true;
+  elSpeak.classList.add("speaking");
+  var finished = false;
+  function done(ok){
+    if (finished) return;
+    finished = true;
+    audioBusy = false;
+    elSpeak.classList.remove("speaking");
+    audioEl.onended = audioEl.onerror = audioEl.oncanplay = null;
+    audioEl.removeAttribute("src");
+    if (ok && onOk) onOk();
+    else if (!ok && onFail) onFail();
+  }
+  audioEl.onended = function(){ done(true); };
+  audioEl.onerror = function(){ done(false); };
+  audioEl.oncanplay = function(){
+    audioEl.play().catch(function(){ done(false); });
+  };
+  audioEl.src = url;
+  setTimeout(function(){
+    if (!finished && audioEl.readyState < 3){ done(false); }
+  }, 4000);
+}
+function speakCurrent(onDone){
+  var r = ALL[state.deck[state.idx]];
+  if (!r) return;
+  var idx = state.deck[state.idx];
+  var isEn;
+  if (state.flipped){
+    isEn = state.mode !== "en2zh";
+  } else {
+    isEn = state.mode === "en2zh";
+  }
+  if (!isEn){
+    /* 只读汉译 l3zh，不读所属路径 l1zh / l2zh */
+    speakText(r.l3zh, "zh-CN", onDone);
+    return;
+  }
+  /* 英文：优先播放预生成音频（微信内也可发声），失败回退 TTS */
+  stopSpeaking();
+  var url = "audio/" + pad5(idx) + ".m4a";
+  playAudio(url, function(){ if (onDone) onDone(); }, function(){
+    /* 预生成音频不可用时回退 TTS：同样只读条目本身，不读所属路径 l1en / l2en */
+    speakByGroups(splitGroups(r.l3en), "en-GB", onDone);
+  });
+}
+
+/* ---------- 筛选 chips ---------- */
+function buildChips(){
+  var cats = [];
+  var seen = {};
+  for (var i=0;i<ALL.length;i++){
+    var k = ALL[i].l1zh;
+    if (!seen[k]){ seen[k]=true; cats.push({zh:k, en:ALL[i].l1en, n:1}); }
+    else { for (var j=0;j<cats.length;j++) if (cats[j].zh===k) cats[j].n++; }
+  }
+  var html = '<div class="chip on" data-cat="all">全部 <b>'+ALL.length+'</b></div>';
+  for (var c=0;c<cats.length;c++){
+    html += '<div class="chip" data-cat="'+cats[c].zh+'">'+cats[c].zh+' <b>'+cats[c].n+'</b></div>';
+  }
+  elChips.innerHTML = html;
+  elChips.addEventListener("click", function(e){
+    var chip = e.target.closest(".chip");
+    if (!chip) return;
+    var cat = chip.getAttribute("data-cat");
+    if (cat === state.cat) return;
+    state.cat = cat;
+    var all = elChips.querySelectorAll(".chip");
+    for (var i=0;i<all.length;i++) all[i].classList.remove("on");
+    chip.classList.add("on");
+    buildDeck();
+  });
+}
+
+/* ---------- deck ---------- */
+function buildDeck(){
+  stopSpeaking();
+  state.deck = [];
+  for (var i=0;i<ALL.length;i++){
+    if (state.cat==="all" || ALL[i].l1zh===state.cat) state.deck.push(i);
+  }
+  if (state.order==="rand") shuffle(state.deck);
+  state.idx = 0;
+  state.flipped = false;
+  elCard.classList.remove("flip");
+  render();
+}
+function shuffle(a){
+  for (var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var t=a[i]; a[i]=a[j]; a[j]=t;
+  }
+}
+function nextIdx(){
+  if (state.order==="rand") return Math.floor(Math.random()*state.deck.length);
+  return (state.idx+1)%state.deck.length;
+}
+
+/* ---------- render ---------- */
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function render(){
+  if (!state.deck.length){ toast("当前分类无数据"); return; }
+  var r = ALL[state.deck[state.idx]];
+  var en2zh = state.mode==="en2zh";
+
+  elFrontText.textContent = en2zh ? r.l3en : r.l3zh;
+  elBackText.textContent  = en2zh ? r.l3zh : r.l3en;
+  elFrontPath.innerHTML = en2zh
+    ? esc(r.l1en)+'<span class="arrow">›</span>'+esc(r.l2en)
+    : esc(r.l1zh)+'<span class="arrow">›</span>'+esc(r.l2zh);
+  elBackPath.innerHTML = en2zh
+    ? esc(r.l1zh)+'<span class="arrow">›</span>'+esc(r.l2zh)+'<span class="arrow">›</span>'+esc(r.l3zh)
+    : esc(r.l1en)+'<span class="arrow">›</span>'+esc(r.l2en)+'<span class="arrow">›</span>'+esc(r.l3en);
+
+  elTagsFront.innerHTML = en2zh
+    ? '<span class="tag">'+esc(r.l1en)+'</span><span class="tag">'+esc(r.l2en)+'</span>'
+    : '<span class="tag">'+esc(r.l1zh)+'</span><span class="tag">'+esc(r.l2zh)+'</span>';
+  elTagsBack.innerHTML  = '<span class="tag acc">'+esc(r.l3en)+'</span>';
+  elCornerFront.textContent = en2zh ? "英 → 中" : "中 → 英";
+  updateLangBtn();
+  if (r.img){
+    elFrontImgWrap.classList.remove("hide");
+    elFrontImg.src = r.img;
+  } else {
+    elFrontImgWrap.classList.add("hide");
+    elFrontImg.removeAttribute("src");
+  }
+  if (r.img){
+    elWatermark.classList.remove("hide");
+  } else {
+    elWatermark.classList.add("hide");
+  }
+  elFrontHint.textContent = en2zh ? "Tap to flip · 🔊 word by word" : "点击卡片查看英文 · 点 🔊 逐词跟读";
+  elFrontPathLabel.textContent = en2zh ? "PATH" : "所属路径";
+
+  var n = state.deck.length;
+  var pct = n ? Math.round((state.idx+1)/n*100) : 0;
+  elPfill.style.width = pct+"%";
+  elPcur.textContent = (state.idx+1)+" / "+n;
+  elPinfo.textContent = state.cat==="all" ? "全部类目" : state.cat;
+}
+function flipCard(){
+  state.flipped = !state.flipped;
+  elCard.classList.toggle("flip", state.flipped);
+  if (state.autoOn){ scheduleAuto(); }
+}
+
+/* ---------- 自动播放（朗读驱动） ---------- */
+function stopAuto(){
+  state.autoOn = false;
+  elAutoBtn.textContent = "▶";
+  elAutoBtn.classList.remove("on");
+  if (state.autoTimer){ clearTimeout(state.autoTimer); state.autoTimer=null; }
+  stopSpeaking();
+}
+function scheduleAuto(){
+  if (!state.autoOn) return;
+  if (state.autoTimer) clearTimeout(state.autoTimer);
+  if (state.flipped){
+    // 背面阶段：朗读答案，2.6s 后下一张
+    speakCurrent(function(){});
+    state.autoTimer = setTimeout(function(){
+      elCard.classList.remove("flip");
+      state.flipped = false;
+      state.idx = nextIdx();
+      render();
+      scheduleAuto();
+    }, 2600);
+  } else {
+    // 正面阶段：逐词朗读英文（3s 间隔），完成后 1.2s 翻面
+    speakCurrent(function(){
+      if (!state.autoOn) return;
+      state.autoTimer = setTimeout(function(){
+        elCard.classList.add("flip");
+        state.flipped = true;
+        scheduleAuto();
+      }, 1200);
+    });
+  }
+}
+function toggleAuto(){
+  state.autoOn = !state.autoOn;
+  if (state.autoOn){
+    elAutoBtn.textContent = "⏸";
+    elAutoBtn.classList.add("on");
+    if (state.flipped){ elCard.classList.remove("flip"); state.flipped=false; }
+    scheduleAuto();
+    toast("自动播放中：自动翻面并朗读");
+  } else {
+    stopAuto();
+  }
+}
+
+/* ---------- 事件 ---------- */
+/* 卡片主体不响应点击，避免误触翻转；翻面请点左下角 🔄 按钮（桌面端可用 Enter 键） */
+elFlip.addEventListener("click", function(e){
+  e.stopPropagation();
+  flipCard();
+});
+elSpeak.addEventListener("click", function(e){
+  e.stopPropagation();
+  if (state.autoOn) return;
+  speakCurrent();
+});
+elNext.addEventListener("click", function(){
+  stopSpeaking();
+  state.idx = nextIdx();
+  state.flipped = false;
+  elCard.classList.remove("flip");
+  render();
+  if (state.autoOn) scheduleAuto();
+});
+elPrev.addEventListener("click", function(){
+  stopSpeaking();
+  state.idx = (state.idx-1+state.deck.length)%state.deck.length;
+  state.flipped = false;
+  elCard.classList.remove("flip");
+  render();
+  if (state.autoOn) scheduleAuto();
+});
+elLang.addEventListener("click", function(){
+  stopSpeaking();
+  state.mode = state.mode === "en2zh" ? "zh2en" : "en2zh";
+  elModeBtn.textContent = state.mode === "en2zh" ? "EN → 中" : "中 → EN";
+  if (state.flipped){ elCard.classList.remove("flip"); state.flipped = false; }
+  render();
+});
+function updateLangBtn(){
+  elLang.title = state.mode === "en2zh" ? "切换为中文+图片（当前英文）" : "切换为英文+图片（当前中文）";
+}
+elModeBtn.addEventListener("click", function(){
+  stopSpeaking();
+  state.mode = state.mode==="en2zh" ? "zh2en" : "en2zh";
+  elModeBtn.textContent = state.mode==="en2zh" ? "EN → 中" : "中 → EN";
+  if (state.flipped){ elCard.classList.remove("flip"); state.flipped=false; }
+  render();
+});
+elFrontImg.addEventListener("error", function(){ elFrontImgWrap.classList.add("hide"); });
+elFrontImg.addEventListener("load", function(){ elFrontImgWrap.classList.remove("hide"); });
+elOrderBtn.addEventListener("click", function(){
+  stopSpeaking();
+  state.order = state.order==="seq" ? "rand" : "seq";
+  elOrderBtn.textContent = state.order==="seq" ? "顺序" : "随机";
+  buildDeck();
+});
+elAutoBtn.addEventListener("click", toggleAuto);
+
+var elTtsBanner=$("ttsBanner"), elTtsClose=$("ttsClose");
+function checkTTS(){
+  if (!("speechSynthesis" in window)){
+    elTtsBanner.classList.remove("hide");
+  }
+}
+elTtsClose.addEventListener("click", function(){ elTtsBanner.classList.add("hide"); });
+
+document.addEventListener("visibilitychange", function(){
+  if (document.hidden) stopSpeaking();
+});
+
+/* 键盘支持（桌面） */
+document.addEventListener("keydown", function(e){
+  if (e.key==="ArrowRight" || e.key===" ") elNext.click();
+  else if (e.key==="ArrowLeft") elPrev.click();
+  else if (e.key==="Enter") flipCard();
+});
+
+/* ---------- toast ---------- */
+var toastTimer=null;
+function toast(msg){
+  elToast.textContent = msg;
+  elToast.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ elToast.classList.remove("show"); }, 2200);
+}
+
+/* ---------- 启动 ---------- */
+buildChips();
+buildDeck();
+checkTTS();
+})();
+</script>
+</body>
+</html>
