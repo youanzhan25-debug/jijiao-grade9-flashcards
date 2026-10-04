@@ -92,6 +92,8 @@ header p{font-size:12px;color:#9fb2cc;margin-top:4px;}
   border-radius:18px;background:linear-gradient(160deg,#fff 0%,#f1e7d3 100%);
   border:1px solid rgba(217,164,65,.35);overflow:hidden;
 }
+.card-emoji{font-size:clamp(70px,18vw,110px);line-height:1;user-select:none;}
+.card-img img.hide,.card-emoji.hide{display:none;}
 .card-img img{
   width:100%;height:100%;object-fit:cover;display:block;
   transform:scale(1.3);
@@ -209,7 +211,7 @@ footer{text-align:center;font-size:11px;color:#5f7290;margin-top:14px;letter-spa
           <span class="corner" id="cornerFront"></span>
           <div class="tag-row" id="tagsFront"></div>
           <div class="main">
-            <div class="card-img hide" id="frontImgWrap"><img id="frontImg" alt="" referrerpolicy="no-referrer"></div>
+            <div class="card-img hide" id="frontImgWrap"><img id="frontImg" alt="" referrerpolicy="no-referrer"><div class="card-emoji hide" id="frontEmoji"></div></div>
             <div class="l3en" id="frontText"></div><div class="hint" id="frontHint">点 🔊 英音朗读 · 点左下角 🔄 看中文</div>
           </div>
           <div class="path"><div class="pl" id="frontPathLabel">所属路径</div><div class="pv" id="frontPath"></div></div>
@@ -267,7 +269,7 @@ var $ = function(id){ return document.getElementById(id); };
 var elCard=$("card"), elScene=$("scene"), elFrontText=$("frontText"), elBackText=$("backText");
 var elFrontPath=$("frontPath"), elBackPath=$("backPath"), elTagsFront=$("tagsFront"), elTagsBack=$("tagsBack");
 var elCornerFront=$("cornerFront"), elFrontHint=$("frontHint"), elFrontPathLabel=$("frontPathLabel");
-var elFrontImgWrap=$("frontImgWrap"), elFrontImg=$("frontImg"), elWatermark=$("watermark");
+var elFrontImgWrap=$("frontImgWrap"), elFrontImg=$("frontImg"), elFrontEmoji=$("frontEmoji"), elWatermark=$("watermark");
 var elPfill=$("pfill"), elPcur=$("pcur"), elPinfo=$("pinfo");
 var elChips=$("chips"), elModeBtn=$("modeBtn"), elOrderBtn=$("orderBtn"), elAutoBtn=$("autoBtn");
 var elSpeak=$("speakBtn"), elFlip=$("flipBtn"), elPrev=$("prevBtn"), elNext=$("nextBtn"), elLang=$("langBtn");
@@ -517,10 +519,21 @@ function render(){
   updateLangBtn();
   if (r.img){
     elFrontImgWrap.classList.remove("hide");
-    elFrontImg.src = r.img;
+    if (r.img.indexOf("emoji:") === 0){
+      elFrontImg.classList.add("hide");
+      elFrontImg.removeAttribute("src");
+      elFrontEmoji.classList.remove("hide");
+      elFrontEmoji.textContent = r.img.slice(6);
+    } else {
+      elFrontImg.classList.remove("hide");
+      elFrontEmoji.classList.add("hide");
+      elFrontEmoji.textContent = "";
+      elFrontImg.src = r.img;
+    }
   } else {
     elFrontImgWrap.classList.add("hide");
     elFrontImg.removeAttribute("src");
+    elFrontEmoji.classList.add("hide");
   }
   if (r.img){
     elWatermark.classList.remove("hide");
